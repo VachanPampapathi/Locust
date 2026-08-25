@@ -1,0 +1,45 @@
+services:
+  simulator:
+    build: .
+    command: uvicorn simulator.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SCENARIO: ${SCENARIO:-compute}
+      CI_MODE: ${CI_MODE:-false}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/metrics')"
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  locust:
+    build: .
+    command:
+      - locust
+      - -f
+      - locustfile.py
+      - --headless
+      - --host
+      - http://simulator:8000
+      - --html
+      - /app/artifacts/report.html
+      - --csv
+      - /app/artifacts/stats
+      - --stop-timeout
+      - "5"
+    environment:
+      SCENARIO: ${SCENARIO:-compute}
+      CI_MODE: ${CI_MODE:-false}
+      TARGET_HOST: http://simulator:8000
+      ARTIFACT_DIR: /app/artifacts
+      GATE_ENABLED: ${GATE_ENABLED:-true}
+    depends_on:
+      simulator:
+        condition: service_healthy
+    volumes:
+      - ${ARTIFACT_DIR:-./artifacts}:/app/artifacts

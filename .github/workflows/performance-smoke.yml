@@ -1,0 +1,61 @@
+name: Performance smoke
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -e '.[dev]'
+      - name: Static checks
+        run: ruff check .
+      - name: Unit tests
+        run: pytest
+      - name: Start simulator
+        env:
+          SCENARIO: compute
+          CI_MODE: "true"
+        run: |
+          uvicorn simulator.app:app --host 127.0.0.1 --port 8000 > /tmp/simulator.log 2>&1 &
+          python - <<'PY'
+          import time
+          import urllib.request
+
+          for _ in range(40):
+              try:
+                  urllib.request.urlopen("http://127.0.0.1:8000/metrics", timeout=1)
+                  break
+              except OSError:
+                  time.sleep(0.25)
+          else:
+              raise SystemExit("simulator did not start")
+          PY
+      - name: Run headless performance smoke
+        env:
+          SCENARIO: compute
+          CI_MODE: "true"
+          ARTIFACT_DIR: artifacts
+          TARGET_HOST: http://127.0.0.1:8000
+          GATE_ENABLED: "true"
+        run: |
+          mkdir -p artifacts
+          locust -f locustfile.py --headless --host http://127.0.0.1:8000 \
+            --html artifacts/report.html --csv artifacts/stats --stop-timeout 5
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-smoke-reports
+          path: artifacts/
+          if-no-files-found: warn

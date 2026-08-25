@@ -1,0 +1,17 @@
+job_types: [EXPORT]
+
+stages:
+  - {name: jobs-10, duration: 15, users: 10, spawn_rate: 10, user_classes: [NormalUser]}
+  - {name: jobs-20, duration: 15, users: 20, spawn_rate: 10, user_classes: [NormalUser]}
+  - {name: jobs-25, duration: 15, users: 25, spawn_rate: 10, user_classes: [NormalUser]}
+  - {name: jobs-30, duration: 15, users: 30, spawn_rate: 10, user_classes: [NormalUser]}
+  - {name: jobs-50, duration: 15, users: 50, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: jobs-100, duration: 20, users: 100, spawn_rate: 25, user_classes: [NormalUser]}
+
+ci_stages:
+  - {name: jobs-10, duration: 2, users: 10, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: jobs-20, duration: 2, users: 20, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: jobs-25, duration: 2, users: 25, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: jobs-30, duration: 2, users: 30, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: jobs-50, duration: 2, users: 50, spawn_rate: 30, user_classes: [NormalUser]}
+  - {name: jobs-100, duration: 4, users: 100, spawn_rate: 50, user_classes: [NormalUser]}

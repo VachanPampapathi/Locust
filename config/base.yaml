@@ -1,0 +1,19 @@
+target_host: http://127.0.0.1:8000
+tenant_count: 100
+poll_interval_seconds: 0.2
+poll_timeout_seconds: 30
+artifact_dir: artifacts
+normal_wait_seconds: [0.4, 0.8]
+heavy_wait_seconds: [0.01, 0.05]
+
+simulator:
+  compute_units: 254
+  units_per_job: 10
+  mixed_job_limit: 50
+  job_duration_seconds: 2.0
+  scheduler_interval_seconds: 0.02
+
+gate:
+  enabled: true
+  max_failure_ratio: 0.01
+  max_p95_ms: 1000

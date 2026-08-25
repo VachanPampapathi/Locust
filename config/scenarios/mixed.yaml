@@ -1,0 +1,17 @@
+job_types: [EXPORT, IMPORT, TRANSFORM, REPORT, ANALYTICS]
+
+simulator:
+  compute_units: 600
+  units_per_job: 10
+  mixed_job_limit: 50
+  job_duration_seconds: 3.0
+
+stages:
+  - {name: mixed-40, duration: 20, users: 40, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: mixed-50, duration: 20, users: 50, spawn_rate: 20, user_classes: [NormalUser]}
+  - {name: mixed-60, duration: 25, users: 60, spawn_rate: 20, user_classes: [NormalUser]}
+
+ci_stages:
+  - {name: mixed-40, duration: 3, users: 40, spawn_rate: 30, user_classes: [NormalUser]}
+  - {name: mixed-50, duration: 3, users: 50, spawn_rate: 30, user_classes: [NormalUser]}
+  - {name: mixed-60, duration: 5, users: 60, spawn_rate: 30, user_classes: [NormalUser]}

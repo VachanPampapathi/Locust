@@ -1,0 +1,10 @@
+{
+  "tenantId": "",
+  "datasetId": "",
+  "jobType": "EXPORT",
+  "jobName": "",
+  "options": {
+    "validateInput": true,
+    "priority": "NORMAL"
+  }
+}

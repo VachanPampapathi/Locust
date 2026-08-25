@@ -1,0 +1,17 @@
+job_types: [EXPORT]
+
+simulator:
+  compute_units: 100
+  units_per_job: 10
+  mixed_job_limit: 50
+  job_duration_seconds: 2.0
+
+stages:
+  - {name: baseline, duration: 20, users: 8, spawn_rate: 8, user_classes: [NormalUser]}
+  - {name: heavy-burst, duration: 40, users: 40, spawn_rate: 20, user_classes: [NormalUser, HeavyUser]}
+  - {name: recovery, duration: 20, users: 8, spawn_rate: 20, user_classes: [NormalUser]}
+
+ci_stages:
+  - {name: baseline, duration: 3, users: 4, spawn_rate: 8, user_classes: [NormalUser]}
+  - {name: heavy-burst, duration: 6, users: 16, spawn_rate: 16, user_classes: [NormalUser, HeavyUser]}
+  - {name: recovery, duration: 4, users: 4, spawn_rate: 16, user_classes: [NormalUser]}
